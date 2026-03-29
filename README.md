@@ -74,24 +74,18 @@ mysql -u root -p wiki < web_wiki.sql
 
 ### 3. 配置后端
 
-复制并修改配置文件：
-
-```bash
-# 复制示例配置
-cp wikidemo/src/main/resources/application-local.properties.example wikidemo/src/main/resources/application-local.properties
-```
-
-编辑 `application-local.properties`：
+编辑 `wikidemo/src/main/resources/application.properties`：
 
 ```properties
-# 数据库配置
+# 数据库配置 - 请修改为你自己的配置
 spring.datasource.url=jdbc:mysql://localhost:3306/wiki?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
 spring.datasource.username=root
 spring.datasource.password=你的MySQL密码
 
-# Redis配置 (可选)
+# Redis配置 (必选，用于登录 Token 缓存)
 spring.data.redis.host=127.0.0.1
 spring.data.redis.port=6379
+# spring.data.redis.password=你的Redis密码  # 如有密码请取消注释
 ```
 
 > ⚠️ **注意**: 请务必修改默认密码，不要将包含真实密码的配置文件提交到仓库！
@@ -182,10 +176,12 @@ web_demo/
 
 ## 注意事项
 
-1. **密码安全**: 生产环境请使用环境变量或配置中心管理敏感信息
-2. **图片存储**: 当前使用 Base64 存储，大文件会影响性能，建议后续接入对象存储 (OSS/MinIO)
-3. **权限控制**: 项目使用简单拦截器验证，建议增加 Spring Security 做完整权限控制
-4. **生产部署**: 当前无 Docker/Nginx 配置，生产环境需要手动配置
+1. **前端依赖**: 前端项目未上传 node_modules，首次启动需先运行 `npm install` 安装依赖
+2. **Redis 必选**: 登录功能依赖 Redis 缓存 Token，Redis 未启动时登录会失败
+2. **密码安全**: 生产环境请使用环境变量或配置中心管理敏感信息
+3. **图片存储**: 当前使用 Base64 存储，大文件会影响性能，建议后续接入对象存储 (OSS/MinIO)
+4. **权限控制**: 项目使用简单拦截器验证，建议增加 Spring Security 做完整权限控制
+5. **生产部署**: 当前无 Docker/Nginx 配置，生产环境需要手动配置
 
 ## 待完善功能
 
